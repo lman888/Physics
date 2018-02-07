@@ -118,15 +118,27 @@ void PhysicsScene::debugScene()
 void PhysicsScene::setupContinuousDemo(glm::vec2 startPos, float inclination, float speed, float gravity)
 {
 	float t = 0;
-	float tStep = 0.5f;
-	float radius = 1.0f;
+	float tStep = 0.5f;	//tStep is the time difference between each frame
+	float radius = 5.0f;
 	int segments = 12;
-	glm::vec4 colour = glm::vec4(1, 0, 1, 1);
+	glm::vec4 colour = glm::vec4(0, 1, 1, 0);
+
+	float posX;
+	float posY;
+	float degressToRadiants = glm::pi<float>() / 180;						//Calculations for the inclinations
+	inclination *= degressToRadiants;
+	glm::vec2 m_velocity(sin(inclination), cos(inclination) * speed);		//Velocty
+	
+	
 
 	while (t <= 5)
 	{
+
+		posX = startPos.x + m_velocity.x * t;								//Position X velocity at time X
+		posY = startPos.y + m_velocity.y * t + 0.5f * gravity * t * t;		//Position Y velocty at time T
+
 		//Calculate the x, y position of the projectile at time t
-		startPos += speed * tStep;
+		startPos += speed * tStep /*- gravity*/;
 
 		aie::Gizmos::add2DCircle(glm::vec2(startPos.x, startPos.y), radius, segments, colour);
 		t += tStep;

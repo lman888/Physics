@@ -31,7 +31,7 @@ bool PhysicsSceneFixedTimeStepApp::startup()
 	m_physicsScene = new PhysicsScene();
 
 	//Gravity control
-	m_physicsScene->setGravity(glm::vec2(10, -90));
+	m_physicsScene->setGravity(glm::vec2(0, 0));
 	m_physicsScene->setTimesStep(0.01f);
 
 	//Creates the ball and all of the variables inside (pos, vel, mass/ radius, colour)
@@ -40,9 +40,14 @@ bool PhysicsSceneFixedTimeStepApp::startup()
 	Sphere* ball3 = new Sphere(glm::vec2(-150, 10), glm::vec2(0, 0), 4.0f, 14, glm::vec4(0, 1, 1, 0));
 
 	//Adds the actor to the scene
-	m_physicsScene->addActor(ball);
-	m_physicsScene->addActor(ball2);
-	m_physicsScene->addActor(ball3);
+	m_physicsScene->addActor(ball);		//Adds in the Actor into the array
+	m_physicsScene->addActor(ball2);	//Adds in the Actor into the array
+	m_physicsScene->addActor(ball3);	//Adds in the Actor into the array
+
+	m_physicsScene->setupContinuousDemo(glm::vec2(-40, 0), 40, 45, 10);			//Updates the Projectile Path
+
+	Sphere* rocket = new Sphere(glm::vec2(0, 0), glm::vec2(0, 0), 4.0f, 10, glm::vec4(0, 0, 1, 1));
+	m_physicsScene->addActor(rocket);	//Adds in the Actor into the array
 
 	//Collides with the other actor and produces force on the actor
 	//Applies Force
@@ -64,11 +69,10 @@ void PhysicsSceneFixedTimeStepApp::update(float deltaTime)
 	// input example
 	aie::Input* input = aie::Input::getInstance();
 		//Clears Gizmos per frame
-	aie::Gizmos::clear();
+	//aie::Gizmos::clear();
 	
 	m_physicsScene->update(deltaTime);
-	m_physicsScene->updateGizmos();
-
+	m_physicsScene->updateGizmos();											//Updates and makes the Gizmos the Gizmos
 
 	Sphere* ball4 = new Sphere(glm::vec2(100, 200), glm::vec2(0, 0), 4.0f, 4, glm::vec4(1, 1, 0, 0));
 
@@ -78,12 +82,17 @@ void PhysicsSceneFixedTimeStepApp::update(float deltaTime)
 	}
 
 	//Applies force to ball4
-	ball4->applyForce(glm::vec2(20, 40));
+	ball4->applyForce(glm::vec2(0, 0));
+
+	//if (input->isKeyDown(aie::INPUT_KEY_SPACE))
+	//{
+	//	Sphere* fuel = new Sphere()
+	//}
 
 
 	//physicsScene Updates
-	m_physicsScene->update(deltaTime);
-	m_physicsScene->updateGizmos();
+	//m_physicsScene->update(deltaTime);
+	//m_physicsScene->updateGizmos();
 
 
 	// exit the application
