@@ -27,7 +27,7 @@ public:
 	void debugScene();
 
 	void setupContinuousDemo(glm::vec2 startPos, float inclination,
-								float speed, float gravity);
+							float speed, float gravity);
 
 	//Set and Get Gravity
 	glm::vec2 getGravity() const { return m_gravity; }

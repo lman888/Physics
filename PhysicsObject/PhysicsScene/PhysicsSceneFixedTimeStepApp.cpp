@@ -4,6 +4,8 @@
 #include "Input.h"
 #include <iostream>
 #include "Sphere.h"
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 
 PhysicsSceneFixedTimeStepApp::PhysicsSceneFixedTimeStepApp() 
@@ -34,6 +36,13 @@ bool PhysicsSceneFixedTimeStepApp::startup()
 	m_physicsScene->setGravity(glm::vec2(0, 0));
 	m_physicsScene->setTimesStep(0.01f);
 
+	//float radius = 1.0f;
+	//float speed = 30;
+	//glm::vec2 startpos(-40, 0);
+	//float inclination = (float)M_PI / 4.0f;		//45 degrees
+
+	//m_physicsScene->addActor(new Sphere(startpos, inclination, 1, radius, glm::vec4(1, 1, 0, 1)));
+
 	//Creates the ball and all of the variables inside (pos, vel, mass/ radius, colour)
 	Sphere* ball = new Sphere(glm::vec2(440, 0), glm::vec2(0, 0), 4.0f, 10, glm::vec4(1, 0, 1, 1));
 	Sphere* ball2 = new Sphere(glm::vec2(20, 0), glm::vec2(0, 0), 4.0f, 24, glm::vec4(1, 1, 1, 1));
@@ -44,7 +53,7 @@ bool PhysicsSceneFixedTimeStepApp::startup()
 	m_physicsScene->addActor(ball2);	//Adds in the Actor into the array
 	m_physicsScene->addActor(ball3);	//Adds in the Actor into the array
 
-	m_physicsScene->setupContinuousDemo(glm::vec2(-40, 0), 40, 45, 10);			//Updates the Projectile Path
+	m_physicsScene->setupContinuousDemo(glm::vec2(-40, 0), 55, 45, -10);			//Calculates the estimated Projectile path
 
 	Sphere* rocket = new Sphere(glm::vec2(0, 0), glm::vec2(0, 0), 4.0f, 10, glm::vec4(0, 0, 1, 1));
 	m_physicsScene->addActor(rocket);	//Adds in the Actor into the array
