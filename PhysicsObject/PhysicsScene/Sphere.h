@@ -17,6 +17,8 @@ public:
 	float getRadius() { return m_radius; }
 	glm::vec4 getColour() { return m_colour; }
 
+	void setVelocity(glm::vec2 a_velocity) { m_velocity = a_velocity; }
+
 protected:
 	//Initializes variables
 	float m_radius;

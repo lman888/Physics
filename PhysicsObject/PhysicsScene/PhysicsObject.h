@@ -4,9 +4,10 @@
 
 enum ShapeType
 {
-	PLANE = 0,
+	PLANE,
 	SPHERE,
-	BOX
+	BOX,
+	SHAPE_COUNT
 };
 
 class PhysicsObject
@@ -32,5 +33,6 @@ public:
 protected:
 	ShapeType m_shapeID;
 
+	
 };
 

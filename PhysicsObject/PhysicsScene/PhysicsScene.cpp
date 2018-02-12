@@ -1,5 +1,10 @@
 #include "PhysicsScene.h"
 #include "RigidBody.h"
+#include <algorithm>
+#include <cassert>
+#include "Sphere.h"
+#include <glm\glm.hpp>
+#include <glm\ext.hpp>
 
 
 PhysicsScene::PhysicsScene() : m_timeStep(0.01f), m_gravity(glm::vec2(0, 0))
@@ -118,26 +123,104 @@ void PhysicsScene::debugScene()
 void PhysicsScene::setupContinuousDemo(glm::vec2 startPos, float inclination, float speed, float gravity)
 {
 	float t = 0;
-	float tStep = 0.5f;														//tStep is the time difference between each frame
+	float tStep = 0.5f;																//tStep is the time difference between each frame
 	float radius = 5.0f;
 	int segments = 12;
 	glm::vec4 colour = glm::vec4(0, 1, 1, 0);
 
-	float posX;																//Creates posX
-	float posY;																//Creates posY
-	//float degreesToRadiants = glm::pi<float>() / 180;						//Calculations for the inclinations (takes)
-	//inclination *= degreesToRadiants;										//Times equals the inclination by the degreesToRadiants
-	glm::vec2 m_velocity(sin(inclination), cos(inclination) * speed);		//Velocty
-	
-	
-	while (t <= 8)
-	{
-		posX = startPos.x + m_velocity.x * t;								//Position X velocity at time T
-		posY = startPos.y + m_velocity.y * t + 0.5f * gravity * t * t;		//Position Y velocty at time T
+	float posX;																		//Creates posX
+	float posY;																		//Creates posY
+	float degreesToRadiants = glm::pi<float>() / 180;								//Calculations for the inclinations (takes)
+	inclination *= degreesToRadiants;												//Times equals the inclination by the degreesToRadiants
 
-		startPos += speed * tStep /*- gravity*/;							//Calculate the x, y position of the projectile at time t
+
+	glm::vec2 m_velocity(sin(inclination), cos(inclination) * speed);				//Velocty
+	
+	
+	while (t <= 10)
+	{
+		startPos += speed * tStep /*- gravity*/;									//Calculate the x, y position of the projectile at time t
+
+		posX = startPos.x + m_velocity.x * t;										//Position X velocity at time T
+		posY = startPos.y + m_velocity.y * t + 0.5f * gravity * t * t;				//Position Y velocty at time T (squares time t * t)
 
 		aie::Gizmos::add2DCircle(glm::vec2(posX, posY), radius, segments, colour);	//Draws the circle and colours it
 		t += tStep;																	//increments t by tStep
 	}
+}
+
+//Function pointer array for doing our collisions
+typedef bool(*collisionFnc)(PhysicsObject*, PhysicsObject*);
+
+static collisionFnc collisionFunctionArray[] =
+{
+	nullptr					  ,	PhysicsScene::plane2Sphere,
+	PhysicsScene::sphere2Plane,	PhysicsScene::sphere2Sphere,
+};
+
+void PhysicsScene::checkForCollision()
+{
+	int actorCount = (int)m_actors.size();												//Creates actorCount and pushes m_actor's size in as an int
+
+	//need to check for collisions against all objects except this one.
+	for (int outer = 0; outer != actorCount - 1; outer++)
+	{
+		for (int inner = outer + 1; inner != actorCount; inner++)
+		{
+			auto object1 = m_actors[outer];												//Casts object1 as a PhysicsObject
+			auto object2 = m_actors[inner];												//Casts object2 as a PhysicsObject
+			int shapeId1 = (int)object1->getShapeID();									//Gets the shapeID for object1
+			int shapeId2 = (int)object2->getShapeID();									//Gets the shapeID for object2
+
+			//Using function pointers
+			int functionIdx = (shapeId1 * SHAPE_COUNT + shapeId2);						//
+			collisionFnc collisionFunctionPtr = collisionFunctionArray[functionIdx];	//Pushes in the collisionArray[functionIdx] into collisionFunctionPtr
+
+			if (collisionFunctionPtr != nullptr)
+			{
+				collisionFunctionPtr(object1, object2);									//Did it collide?
+			}
+			
+		}
+	}
+}
+
+bool PhysicsScene::plane2Sphere(PhysicsObject * obj1, PhysicsObject * obj2)
+{
+	return sphere2Plane(obj2, obj1);
+}
+
+bool PhysicsScene::sphere2Plane(PhysicsObject * obj1, PhysicsObject * obj2)
+{
+	return false;
+}
+
+bool PhysicsScene::sphere2Sphere(PhysicsObject * obj1, PhysicsObject * obj2)
+{
+	//Try to cast objects to sphere and sphere
+	Sphere* sphere1 = dynamic_cast<Sphere*>(obj1);
+	Sphere* sphere2 = dynamic_cast<Sphere*>(obj2);
+
+	glm::vec2 vecBetween = sphere2->getPosition() - sphere1->getPosition();			//End - Start
+
+	float distance = glm::length(vecBetween);										//GLM MAGNITUDE(Gets the length of the Vector we are halfing)
+
+	//If we are successful then test for collision
+	if (sphere1 != nullptr && sphere2 != nullptr)
+	{
+		//This is where the collision detection happens
+		//You need code which sets velocity of the two spheres to zero
+		//If they are overlapping
+
+		//Get distance between 2 spheres
+		//If distance is less than the combined radius of
+		//both spheres, then a collision occurred so set the
+		//velocity of both spheres to 0 (we'll add collision resolution later)
+		if ((sphere1->getRadius() + sphere2->getRadius()) > distance )
+		{
+			sphere1->setVelocity(glm::vec2(0, 0));
+			sphere2->setVelocity(glm::vec2(0, 0));
+		}
+	}
+	return false;
 }

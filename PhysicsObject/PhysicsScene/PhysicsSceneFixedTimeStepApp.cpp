@@ -3,9 +3,10 @@
 #include "Font.h"
 #include "Input.h"
 #include <iostream>
-#include "Sphere.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include "Sphere.h"
+#include "Plane.h"
 
 
 PhysicsSceneFixedTimeStepApp::PhysicsSceneFixedTimeStepApp() 
@@ -53,10 +54,11 @@ bool PhysicsSceneFixedTimeStepApp::startup()
 	m_physicsScene->addActor(ball2);	//Adds in the Actor into the array
 	m_physicsScene->addActor(ball3);	//Adds in the Actor into the array
 
-	m_physicsScene->setupContinuousDemo(glm::vec2(-40, 0), 55, 45, -10);			//Calculates the estimated Projectile path
 
-	Sphere* rocket = new Sphere(glm::vec2(0, 0), glm::vec2(0, 0), 4.0f, 10, glm::vec4(0, 0, 1, 1));
-	m_physicsScene->addActor(rocket);	//Adds in the Actor into the array
+	m_physicsScene->setupContinuousDemo(glm::vec2(-40, 0), 45, 25, -10);			//Calculates the estimated Projectile path
+
+	//Sphere* rocket = new Sphere(glm::vec2(0, 0), glm::vec2(0, 0), 4.0f, 10, glm::vec4(0, 0, 1, 1));
+	//m_physicsScene->addActor(rocket);	//Adds in the Actor into the array
 
 	//Collides with the other actor and produces force on the actor
 	//Applies Force
@@ -78,8 +80,25 @@ void PhysicsSceneFixedTimeStepApp::update(float deltaTime)
 	// input example
 	aie::Input* input = aie::Input::getInstance();
 		//Clears Gizmos per frame
-	//aie::Gizmos::clear();
+	aie::Gizmos::clear();
 	
+	Sphere* colBall1 = new Sphere(glm::vec2(-100, 0), glm::vec2(0, 0), 4.0f, 24, glm::vec4(0, 1, 0, 0));
+	Sphere* colBall2 = new Sphere(glm::vec2(100, 0), glm::vec2(0, 0), 4.0f, 24, glm::vec4(0, 1, 0, 0));
+
+	if (input->isKeyDown(aie::INPUT_KEY_RIGHT))
+	{
+		m_physicsScene->addActor(colBall1);
+		m_physicsScene->addActor(colBall2);
+		colBall1->applyForce(glm::vec2(100, 0));
+		colBall2->applyForce(glm::vec2(-100, 0));
+	}
+	
+
+	colBall1->applyForce(glm::vec2(100, 0));
+	colBall2->applyForce(glm::vec2(-100, 0));
+
+	m_physicsScene->sphere2Sphere(colBall1, colBall2);
+
 	m_physicsScene->update(deltaTime);
 	m_physicsScene->updateGizmos();											//Updates and makes the Gizmos the Gizmos
 

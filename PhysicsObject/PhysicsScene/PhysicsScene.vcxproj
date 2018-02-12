@@ -166,6 +166,7 @@
     <ClCompile Include="PhysicsScene.cpp" />
     <ClCompile Include="PhysicsSceneFixedTimeStepApp.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Plane.cpp" />
     <ClCompile Include="RigidBody.cpp" />
     <ClCompile Include="Sphere.cpp" />
   </ItemGroup>
@@ -173,6 +174,7 @@
     <ClInclude Include="PhysicsObject.h" />
     <ClInclude Include="PhysicsScene.h" />
     <ClInclude Include="PhysicsSceneFixedTimeStepApp.h" />
+    <ClInclude Include="Plane.h" />
     <ClInclude Include="RigidBody.h" />
     <ClInclude Include="Sphere.h" />
   </ItemGroup>

@@ -37,6 +37,17 @@ public:
 	float getTimeStep() const { return m_timeStep; }
 	void setTimesStep(const float timeStep) { m_timeStep = timeStep; }
 
+	void checkForCollision();
+
+	static bool plane2Sphere(PhysicsObject* obj1, 
+							 PhysicsObject* obj2);
+
+	static bool sphere2Plane(PhysicsObject* obj1, 
+							 PhysicsObject* obj2);
+
+	static bool sphere2Sphere(PhysicsObject* obj1,
+							  PhysicsObject* obj2);
+
 protected:
 	//Intialise values
 	glm::vec2 m_gravity;
