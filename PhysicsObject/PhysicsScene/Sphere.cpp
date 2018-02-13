@@ -25,22 +25,23 @@ void Sphere::makeGizmo()
 
 bool Sphere::checkCollision(PhysicsObject * pOther)
 {
-	//Dynamically casts pOther into a Sphere
-	//Pushes pOther* into sOther*
-	Sphere* sOther = dynamic_cast<Sphere*>(pOther);
+	////Dynamically casts pOther into a Sphere
+	////Pushes pO5ther* into sOther*
+	//Sphere* sOther = dynamic_cast<Sphere*>(pOther);
 
-	if (sOther != nullptr)
-	{
-		float distance = glm::distance(getPosition(), sOther->getPosition());
-		{
-			if (distance < getRadius() + sOther->getRadius())
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
-	}
+	//if (sOther != nullptr)
+	//{
+	//	float distance = glm::distance(getPosition(), sOther->getPosition());
+	//	{
+	//		if (distance < getRadius() + sOther->getRadius())
+	//		{
+	//			return true;
+	//		}
+	//		else
+	//		{
+	//			return false;
+	//		}
+	//	}
+	//}
+	return false;
 }

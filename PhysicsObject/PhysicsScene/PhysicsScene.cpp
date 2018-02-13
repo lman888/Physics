@@ -5,6 +5,7 @@
 #include "Sphere.h"
 #include <glm\glm.hpp>
 #include <glm\ext.hpp>
+#include "Plane.h"
 
 
 PhysicsScene::PhysicsScene() : m_timeStep(0.01f), m_gravity(glm::vec2(0, 0))
@@ -81,7 +82,7 @@ void PhysicsScene::update(float deltaTime)
 				//Dynamic_cast casts pActor to be a RigidBody
 				RigidBody* pRigid = dynamic_cast<RigidBody*> (pActor);
 
-				if (pRigid->checkCollision(pOther) == true)
+				if (pRigid && pRigid->checkCollision(pOther) == true)
 				{
 					//Calls apply force to the actor(Object)
 					pRigid->applyForceToActor
@@ -192,6 +193,34 @@ bool PhysicsScene::plane2Sphere(PhysicsObject * obj1, PhysicsObject * obj2)
 
 bool PhysicsScene::sphere2Plane(PhysicsObject * obj1, PhysicsObject * obj2)
 {
+	Sphere* sphere = dynamic_cast<Sphere*>(obj1);
+	Plane* plane = dynamic_cast<Plane*>(obj2);
+
+	//If we are successful on the test for collision
+	if (sphere != nullptr && plane != nullptr)
+	{
+
+		glm::vec2 collisionNormal = plane->getNormal();
+		float sphereToPlane = glm::dot(sphere->getPosition(), plane->getNormal()) + 
+							           plane->getDistance();
+
+		//If we are behind the plane then we flip the normal!
+		if (sphereToPlane < 0)
+		{
+			collisionNormal *= -1;
+			sphereToPlane *= -1;
+		}
+
+		float intersection = sphere->getRadius() - sphereToPlane;
+
+		if (intersection > 0)
+		{
+			//Set sphere velocity to zero here
+			sphere->setVelocity(glm::vec2(plane->getNormal() * sphere->getVelocity()) /** -1.0f glm::vec2(0, 0)*/);
+			return true;
+		}
+	}
+	
 	return false;
 }
 
@@ -218,8 +247,8 @@ bool PhysicsScene::sphere2Sphere(PhysicsObject * obj1, PhysicsObject * obj2)
 		//velocity of both spheres to 0 (we'll add collision resolution later)
 		if ((sphere1->getRadius() + sphere2->getRadius()) > distance )
 		{
-			sphere1->setVelocity(glm::vec2(0, 0));
-			sphere2->setVelocity(glm::vec2(0, 0));
+			sphere1->setVelocity(sphere1->getVelocity() * -1.0f/*glm::vec2(-10, 0)*/);
+			sphere2->setVelocity(sphere2->getVelocity() * -1.0f/*glm::vec2(0, 10)*/);
 		}
 	}
 	return false;

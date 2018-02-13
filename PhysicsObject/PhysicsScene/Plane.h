@@ -1,16 +1,17 @@
 #pragma once
 #include "PhysicsObject.h"
+#include <glm\glm.hpp>
+#include <glm\ext.hpp>
 
 class Plane : public PhysicsObject
 {
 public:
-	Plane();
-	//Plane(glm::vec2 normal, float distance);
+	Plane(glm::vec2 normal, float distance);
 	~Plane();
 
 	virtual void fixedUpdate(glm::vec2 gravity, float timeStep);
 	virtual void debug() {};
-	virtual void makeGizmo() const;
+	virtual void makeGizmo();
 	virtual void resetPosition();
 
 	glm::vec2 getNormal() { return m_normal; }

@@ -4,6 +4,8 @@
 #include "Renderer2D.h"
 #include "PhysicsSceneFixedTimeStepApp.h"
 #include "PhysicsScene.h"
+#include "Sphere.h"
+#include "Plane.h"
 
 class PhysicsSceneFixedTimeStepApp : public aie::Application {
 public:
@@ -25,4 +27,8 @@ protected:
 	//Creates a physicsScene Pointer
 	PhysicsScene* m_physicsScene;
 
+	Sphere* colBall1;
+	Sphere* colBall2;
+
+	Plane* plane;
 };

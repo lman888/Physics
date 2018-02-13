@@ -29,6 +29,8 @@ public:
 
 	//Gets ShapeID
 	ShapeType getShapeID() { return m_shapeID; }
+	void setShapeID(ShapeType a_ShapeID) { m_shapeID = a_ShapeID; }
+
 
 protected:
 	ShapeType m_shapeID;

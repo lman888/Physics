@@ -21,6 +21,8 @@ public:
 	//Checks Collision
 	virtual bool checkCollision(PhysicsObject* pOther) = 0;
 
+	void resolveCollision(RigidBody* actor2);
+
 	glm::vec2 getPosition() { return m_position; }
 	float getRotation() { return m_rotation; }
 	glm::vec2 getVelocity() { return m_velocity; }

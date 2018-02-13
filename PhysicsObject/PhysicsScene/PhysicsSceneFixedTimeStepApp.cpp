@@ -6,7 +6,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include "Sphere.h"
-#include "Plane.h"
+
 
 
 PhysicsSceneFixedTimeStepApp::PhysicsSceneFixedTimeStepApp() 
@@ -34,8 +34,8 @@ bool PhysicsSceneFixedTimeStepApp::startup()
 	m_physicsScene = new PhysicsScene();
 
 	//Gravity control
-	m_physicsScene->setGravity(glm::vec2(0, 0));
-	m_physicsScene->setTimesStep(0.01f);
+	m_physicsScene->setGravity(glm::vec2(0, -98));
+	m_physicsScene->setTimesStep(0.005f);
 
 	//float radius = 1.0f;
 	//float speed = 30;
@@ -44,18 +44,24 @@ bool PhysicsSceneFixedTimeStepApp::startup()
 
 	//m_physicsScene->addActor(new Sphere(startpos, inclination, 1, radius, glm::vec4(1, 1, 0, 1)));
 
-	//Creates the ball and all of the variables inside (pos, vel, mass/ radius, colour)
-	Sphere* ball = new Sphere(glm::vec2(440, 0), glm::vec2(0, 0), 4.0f, 10, glm::vec4(1, 0, 1, 1));
-	Sphere* ball2 = new Sphere(glm::vec2(20, 0), glm::vec2(0, 0), 4.0f, 24, glm::vec4(1, 1, 1, 1));
-	Sphere* ball3 = new Sphere(glm::vec2(-150, 10), glm::vec2(0, 0), 4.0f, 14, glm::vec4(0, 1, 1, 0));
+
+	colBall1 = new Sphere(glm::vec2(-100, 0), glm::vec2(-20, 0), 4.0f, 24, glm::vec4(1, 1, 0, 0));		//Creates the Ball
+	colBall1->setShapeID(SPHERE);
+	colBall2 = new Sphere(glm::vec2(100, 0), glm::vec2(10, 0), 4.0f, 24, glm::vec4(1, 1, 0, 0));			//Creates the Ball
+	colBall2->setShapeID(SPHERE);
+																						
+	plane = new Plane(glm::vec2(0, -1), -150);															//Creates the Plane
+	plane->setShapeID(PLANE);																			//Gets the Shape ID for the Plane
+	m_physicsScene->addActor(plane);																	//Adds the Plane to the actor list
 
 	//Adds the actor to the scene
-	m_physicsScene->addActor(ball);		//Adds in the Actor into the array
-	m_physicsScene->addActor(ball2);	//Adds in the Actor into the array
-	m_physicsScene->addActor(ball3);	//Adds in the Actor into the array
+	m_physicsScene->addActor(colBall1);																	//Adds in the Actor into the array
+	m_physicsScene->addActor(colBall2);																	//Adds in the Actor into the array
 
+	//colBall1->applyForce(glm::vec2(100, 0));															//Applys force to the actor
+	//colBall2->applyForce(glm::vec2(-100, 0));															//Applys force to the second actor
 
-	m_physicsScene->setupContinuousDemo(glm::vec2(-40, 0), 45, 25, -10);			//Calculates the estimated Projectile path
+	m_physicsScene->setupContinuousDemo(glm::vec2(-40, 0), 45, 25, -10);								//Calculates the estimated Projectile path
 
 	//Sphere* rocket = new Sphere(glm::vec2(0, 0), glm::vec2(0, 0), 4.0f, 10, glm::vec4(0, 0, 1, 1));
 	//m_physicsScene->addActor(rocket);	//Adds in the Actor into the array
@@ -81,36 +87,13 @@ void PhysicsSceneFixedTimeStepApp::update(float deltaTime)
 	aie::Input* input = aie::Input::getInstance();
 		//Clears Gizmos per frame
 	aie::Gizmos::clear();
-	
-	Sphere* colBall1 = new Sphere(glm::vec2(-100, 0), glm::vec2(0, 0), 4.0f, 24, glm::vec4(0, 1, 0, 0));
-	Sphere* colBall2 = new Sphere(glm::vec2(100, 0), glm::vec2(0, 0), 4.0f, 24, glm::vec4(0, 1, 0, 0));
 
-	if (input->isKeyDown(aie::INPUT_KEY_RIGHT))
-	{
-		m_physicsScene->addActor(colBall1);
-		m_physicsScene->addActor(colBall2);
-		colBall1->applyForce(glm::vec2(100, 0));
-		colBall2->applyForce(glm::vec2(-100, 0));
-	}
-	
+	m_physicsScene->update(deltaTime);																	//Physics Scene Update
+	m_physicsScene->updateGizmos();																		//Updates and makes the Gizmos the Gizmos
+	//m_physicsScene->sphere2Sphere(colBall1, colBall2);													//Calls the Collision function for two Shperes
+	m_physicsScene->sphere2Plane(colBall1, plane);
+	m_physicsScene->sphere2Plane(colBall2, plane);
 
-	colBall1->applyForce(glm::vec2(100, 0));
-	colBall2->applyForce(glm::vec2(-100, 0));
-
-	m_physicsScene->sphere2Sphere(colBall1, colBall2);
-
-	m_physicsScene->update(deltaTime);
-	m_physicsScene->updateGizmos();											//Updates and makes the Gizmos the Gizmos
-
-	Sphere* ball4 = new Sphere(glm::vec2(100, 200), glm::vec2(0, 0), 4.0f, 4, glm::vec4(1, 1, 0, 0));
-
-	if (input->isKeyDown(aie::INPUT_KEY_LEFT))
-	{
-		m_physicsScene->addActor(ball4);
-	}
-
-	//Applies force to ball4
-	ball4->applyForce(glm::vec2(0, 0));
 
 	//if (input->isKeyDown(aie::INPUT_KEY_SPACE))
 	//{
