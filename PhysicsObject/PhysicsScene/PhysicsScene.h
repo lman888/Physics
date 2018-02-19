@@ -1,6 +1,7 @@
 #pragma once
 #include "PhysicsObject.h"
 #include <Gizmos.h>
+#include "RigidBody.h"
 #include <glm\ext.hpp>
 #include <glm\glm.hpp>
 #include <vector>
@@ -15,7 +16,14 @@ class PhysicsScene
 {
 public:
 
-	 
+	struct CollisionData
+	{
+		bool wasCollision = false;		//sets collision to false
+		glm::vec2 normal = { 0, 0 };	
+		float overlap = 0.0f;
+	};
+	
+public:
 	PhysicsScene();
 	~PhysicsScene();
 
@@ -25,7 +33,8 @@ public:
 	void update(float deltaTime);
 	void updateGizmos();
 	void debugScene();
-
+	void handleCollision(PhysicsObject* obj1, PhysicsObject* obj2, CollisionData& collision);
+	void seperateCollisionObjects(RigidBody* rb1, RigidBody* rb2, PhysicsScene::CollisionData& collision);
 	void setupContinuousDemo(glm::vec2 startPos, float inclination,
 							float speed, float gravity);
 
@@ -39,13 +48,13 @@ public:
 
 	void checkForCollision();
 
-	static bool plane2Sphere(PhysicsObject* obj1, 
+	static CollisionData Plane2Sphere(PhysicsObject* obj1, 
 							 PhysicsObject* obj2);
 
-	static bool sphere2Plane(PhysicsObject* obj1, 
+	static CollisionData Sphere2Sphere(PhysicsObject* obj1,
 							 PhysicsObject* obj2);
 
-	static bool sphere2Sphere(PhysicsObject* obj1,
+	static CollisionData Sphere2Plane(PhysicsObject* obj1,
 							  PhysicsObject* obj2);
 
 protected:

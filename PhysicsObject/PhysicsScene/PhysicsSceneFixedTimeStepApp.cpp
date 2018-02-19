@@ -45,9 +45,9 @@ bool PhysicsSceneFixedTimeStepApp::startup()
 	//m_physicsScene->addActor(new Sphere(startpos, inclination, 1, radius, glm::vec4(1, 1, 0, 1)));
 
 
-	colBall1 = new Sphere(glm::vec2(-100, 0), glm::vec2(-20, 0), 4.0f, 24, glm::vec4(1, 1, 0, 0));		//Creates the Ball
+	colBall1 = new Sphere(glm::vec2(-100, 0), glm::vec2(0, 0), 4.0f, 24, glm::vec4(1, 1, 0, 0));		//Creates the Ball
 	colBall1->setShapeID(SPHERE);
-	colBall2 = new Sphere(glm::vec2(100, 0), glm::vec2(10, 0), 4.0f, 24, glm::vec4(1, 1, 0, 0));			//Creates the Ball
+	colBall2 = new Sphere(glm::vec2(100, 0), glm::vec2(10, 0), 4.0f, 24, glm::vec4(1, 1, 0, 0));		//Creates the Ball
 	colBall2->setShapeID(SPHERE);
 																						
 	plane = new Plane(glm::vec2(0, -1), -150);															//Creates the Plane
@@ -58,8 +58,8 @@ bool PhysicsSceneFixedTimeStepApp::startup()
 	m_physicsScene->addActor(colBall1);																	//Adds in the Actor into the array
 	m_physicsScene->addActor(colBall2);																	//Adds in the Actor into the array
 
-	//colBall1->applyForce(glm::vec2(100, 0));															//Applys force to the actor
-	//colBall2->applyForce(glm::vec2(-100, 0));															//Applys force to the second actor
+	colBall1->applyForce(glm::vec2(0, 0));															//Applys force to the actor
+	colBall2->applyForce(glm::vec2(0, 0));															//Applys force to the second actor
 
 	m_physicsScene->setupContinuousDemo(glm::vec2(-40, 0), 45, 25, -10);								//Calculates the estimated Projectile path
 
@@ -90,9 +90,6 @@ void PhysicsSceneFixedTimeStepApp::update(float deltaTime)
 
 	m_physicsScene->update(deltaTime);																	//Physics Scene Update
 	m_physicsScene->updateGizmos();																		//Updates and makes the Gizmos the Gizmos
-	//m_physicsScene->sphere2Sphere(colBall1, colBall2);													//Calls the Collision function for two Shperes
-	m_physicsScene->sphere2Plane(colBall1, plane);
-	m_physicsScene->sphere2Plane(colBall2, plane);
 
 
 	//if (input->isKeyDown(aie::INPUT_KEY_SPACE))
