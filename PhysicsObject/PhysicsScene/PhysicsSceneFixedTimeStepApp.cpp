@@ -58,8 +58,8 @@ bool PhysicsSceneFixedTimeStepApp::startup()
 	m_physicsScene->addActor(colBall1);																	//Adds in the Actor into the array
 	m_physicsScene->addActor(colBall2);																	//Adds in the Actor into the array
 
-	colBall1->applyForce(glm::vec2(0, 0));															//Applys force to the actor
-	colBall2->applyForce(glm::vec2(0, 0));															//Applys force to the second actor
+	colBall1->applyForce(glm::vec2(0, 0));															    //Applys force to the actor
+	colBall2->applyForce(glm::vec2(0, 0));															    //Applys force to the second actor
 
 	m_physicsScene->setupContinuousDemo(glm::vec2(-40, 0), 45, 25, -10);								//Calculates the estimated Projectile path
 
