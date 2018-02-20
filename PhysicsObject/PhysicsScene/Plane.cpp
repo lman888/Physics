@@ -27,7 +27,7 @@ void Plane::fixedUpdate(glm::vec2 gravity, float timeStep)
 void Plane::makeGizmo()
 {
 	float lineSegmentLength = 1000;										//Sets the length of the Plane to 1000
-	glm::vec2 centrePoint = m_normal * -m_distanceToOrigin;				//Creates centrePoint via timesng m_normal by m_distanceToOrigin
+	glm::vec2 centrePoint = m_normal * m_distanceToOrigin;				//Creates centrePoint via timesng m_normal by m_distanceToOrigin
 
 	glm::vec4 colour(1, 1, 1, 1);										//Sets the colour
 	glm::vec2 parrallel(m_normal.y, -m_normal.x);						//Creates parralel
@@ -39,4 +39,15 @@ void Plane::makeGizmo()
 void Plane::resetPosition()
 {
 
+}
+
+void Plane::resolveCollision(RigidBody * actor2, glm::vec2 contact)
+{
+	glm::vec2 vRel = actor2->getVelocity();
+	float e = actor2->getElasticity();
+	float j = glm::dot(-(1 + e) * (vRel), m_normal) / (1 / actor2->getMass());
+
+	glm::vec2 force = m_normal * j;
+
+	actor2->applyForce(force, contact - actor2->getPosition());
 }

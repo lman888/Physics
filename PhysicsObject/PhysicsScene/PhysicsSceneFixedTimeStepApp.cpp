@@ -45,12 +45,13 @@ bool PhysicsSceneFixedTimeStepApp::startup()
 	//m_physicsScene->addActor(new Sphere(startpos, inclination, 1, radius, glm::vec4(1, 1, 0, 1)));
 
 
-	colBall1 = new Sphere(glm::vec2(-100, 0), glm::vec2(0, 0), 4.0f, 24, glm::vec4(1, 1, 0, 0));		//Creates the Ball
+	colBall1 = new Sphere(glm::vec2(-100, 0), glm::vec2(0, -50), 4.0f, 24, glm::vec4(1, 1, 0, 0));		//Creates the Ball
 	colBall1->setShapeID(SPHERE);
-	colBall2 = new Sphere(glm::vec2(100, 0), glm::vec2(10, 0), 4.0f, 24, glm::vec4(1, 1, 0, 0));		//Creates the Ball
+	colBall2 = new Sphere(glm::vec2(100, 0), glm::vec2(0, -50), 4.0f, 24, glm::vec4(1, 1, 0, 0));		//Creates the Ball
 	colBall2->setShapeID(SPHERE);
+	box1 = new Box(glm::vec2(50, 50), glm::vec2(0, 0), 1.0f, glm::vec2(0, 0), glm::vec4(1, 0, 0, 1));
 																						
-	plane = new Plane(glm::vec2(0, -1), -150);															//Creates the Plane
+	plane = new Plane(glm::vec2(0, 1), -150);															//Creates the Plane
 	plane->setShapeID(PLANE);																			//Gets the Shape ID for the Plane
 	m_physicsScene->addActor(plane);																	//Adds the Plane to the actor list
 
@@ -58,8 +59,8 @@ bool PhysicsSceneFixedTimeStepApp::startup()
 	m_physicsScene->addActor(colBall1);																	//Adds in the Actor into the array
 	m_physicsScene->addActor(colBall2);																	//Adds in the Actor into the array
 
-	colBall1->applyForce(glm::vec2(0, 0));															    //Applys force to the actor
-	colBall2->applyForce(glm::vec2(0, 0));															    //Applys force to the second actor
+	//colBall1->applyForce(glm::vec2(0, 0));															    //Applys force to the actor
+	//colBall2->applyForce(glm::vec2(0, 0));															    //Applys force to the second actor
 
 	m_physicsScene->setupContinuousDemo(glm::vec2(-40, 0), 45, 25, -10);								//Calculates the estimated Projectile path
 

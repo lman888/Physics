@@ -2,6 +2,7 @@
 #include "PhysicsObject.h"
 #include <glm\glm.hpp>
 #include <glm\ext.hpp>
+#include "RigidBody.h"
 
 class Plane : public PhysicsObject
 {
@@ -16,6 +17,8 @@ public:
 	virtual void debug() {};
 	virtual void makeGizmo();
 	virtual void resetPosition();
+
+	void resolveCollision(RigidBody* actor2, glm::vec2 contact);
 
 	glm::vec2 getNormal() { return m_normal; }
 	float getDistance() { return m_distanceToOrigin; }

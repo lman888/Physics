@@ -244,6 +244,7 @@ PhysicsScene::CollisionData PhysicsScene::Sphere2Sphere(PhysicsObject * obj1, Ph
 
 	glm::vec2 vecBetween = sphere2->getPosition() - sphere1->getPosition();			//End - Start
 
+
 	float distance = glm::length(vecBetween);										 //GLM MAGNITUDE(Gets the length of the Vector we are halfing)
 
 																					 //If we are successful then test for collision
@@ -269,7 +270,7 @@ PhysicsScene::CollisionData PhysicsScene::Sphere2Sphere(PhysicsObject * obj1, Ph
 			collData.wasCollision = true;																//Sets collision to true
 			collData.normal = glm::normalize(sphere2->getPosition() - sphere1->getPosition());			//Normalizes both spheres positions
 			collData.overlap = distanceBetween - minDistanceBetween;									//Pushes in both distances into the overlap
-			//sphere1->resolveCollision(sphere2);
+			sphere1->resolveCollision(sphere2, 0.5f * (sphere1->getPosition() + sphere2->getPosition()));
 
 			return collData;
 		}
@@ -284,11 +285,14 @@ PhysicsScene::CollisionData PhysicsScene::Sphere2Plane(PhysicsObject * obj1, Phy
 
 	CollisionData collData;
 	
+
 	//If we are successful on the test for collision
 	if (sphere != nullptr && plane != nullptr)
 	{
-
 		glm::vec2 collisionNormal = plane->getNormal();
+
+		glm::vec2 contact = sphere->getPosition() + (collisionNormal * -sphere->getRadius());
+
 		float sphereToPlane = glm::dot(sphere->getPosition(), plane->getNormal()) -
 							  plane->getDistance() - sphere->getRadius();
 

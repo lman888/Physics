@@ -6,6 +6,7 @@
 #include "PhysicsScene.h"
 #include "Sphere.h"
 #include "Plane.h"
+#include "Box.h"
 
 class PhysicsSceneFixedTimeStepApp : public aie::Application {
 public:
@@ -29,6 +30,7 @@ protected:
 
 	Sphere* colBall1;
 	Sphere* colBall2;
+	Box* box1;
 
 	Plane* plane;
 };
