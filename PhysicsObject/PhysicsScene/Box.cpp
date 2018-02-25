@@ -13,7 +13,6 @@ Box::Box(glm::vec2 position, glm::vec2 velocity, float mass, glm::vec2 extents, 
 	m_extents = extents;
 }
 
-
 Box::~Box()
 {
 }
@@ -37,12 +36,13 @@ void Box::makeGizmo()
 	//							   m_extents, m_colour, &transform);
 
 	//Draw using local axes
-	glm::vec2 p1 = m_position - m_localX * m_extents.x - m_localY * m_extents.y;
-	glm::vec2 p2 = m_position + m_localX * m_extents.x - m_localY * m_extents.y;
-	glm::vec2 p3 = m_position - m_localX * m_extents.x + m_localY * m_extents.y;
-	glm::vec2 p4 = m_position + m_localX * m_extents.x + m_localY * m_extents.y;
-	aie::Gizmos::add2DTri(p1, p2, p4, m_colour);
-	aie::Gizmos::add2DTri(p1, p4, p3, m_colour);
+	//glm::vec2 p1 = m_position - m_localX * m_extents.x - m_localY * m_extents.y;
+	//glm::vec2 p2 = m_position + m_localX * m_extents.x - m_localY * m_extents.y;
+	//glm::vec2 p3 = m_position - m_localX * m_extents.x + m_localY * m_extents.y;
+	//glm::vec2 p4 = m_position + m_localX * m_extents.x + m_localY * m_extents.y;
+	//aie::Gizmos::add2DTri(p1, p2, p4, m_colour);
+	//aie::Gizmos::add2DTri(p1, p4, p3, m_colour);
+	aie::Gizmos::add2DAABBFilled(m_position, m_extents, m_colour);
 }
 
 bool Box::checkCollision()

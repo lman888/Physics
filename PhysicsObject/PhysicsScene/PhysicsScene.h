@@ -49,13 +49,25 @@ public:
 	void checkForCollision();
 
 	static CollisionData Plane2Sphere(PhysicsObject* obj1, 
-							 PhysicsObject* obj2);
+							          PhysicsObject* obj2);
 
 	static CollisionData Sphere2Sphere(PhysicsObject* obj1,
-							 PhysicsObject* obj2);
+							           PhysicsObject* obj2);
 
 	static CollisionData Sphere2Plane(PhysicsObject* obj1,
-							  PhysicsObject* obj2);
+							          PhysicsObject* obj2);
+
+	static CollisionData Sphere2Box(PhysicsObject* obj1,
+									PhysicsObject* obj2);
+
+	static CollisionData Box2Plane(PhysicsObject* obj1,
+								   PhysicsObject* obj2);
+
+	static CollisionData Box2Sphere(PhysicsObject* obj1,
+									PhysicsObject* obj2);
+
+	static CollisionData Box2Box(PhysicsObject* obj1,
+								 PhysicsObject* obj2);
 
 protected:
 	//Intialise values

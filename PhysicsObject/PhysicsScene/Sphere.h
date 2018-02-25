@@ -11,7 +11,7 @@ public:
 	
 	//Creates makeGizmo and checkCollision
 	virtual void makeGizmo();
-	virtual bool checkCollision(PhysicsObject* pOther);
+	bool checkCollision(PhysicsObject* pOther);
 
 	//Gets Radius and Colour
 	float getRadius() { return m_radius; }

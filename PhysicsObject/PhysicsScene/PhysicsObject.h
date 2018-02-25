@@ -15,6 +15,7 @@ class PhysicsObject
 public:
 
 protected:
+
 	//Creates and deletes the default constructor
 	PhysicsObject() = delete;
 	//Overloaded Constructor 

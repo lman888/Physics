@@ -22,7 +22,7 @@ public:
 	void applyForce(glm::vec2 force, glm::vec2 pos);
 
 	//Checks Collision
-	virtual bool checkCollision(PhysicsObject* pOther) = 0;
+	bool checkCollision(PhysicsObject* pOther) ;
 
 	float getMass() { return m_mass; }
 
