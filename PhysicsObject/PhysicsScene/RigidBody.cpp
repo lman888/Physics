@@ -120,9 +120,4 @@ void RigidBody::applyForce(glm::vec2 force, glm::vec2 pos)
 
 }
 
-bool RigidBody::checkCollision(PhysicsObject * pOther)
-{
-	return true;
-}
-
 

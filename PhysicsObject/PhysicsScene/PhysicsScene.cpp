@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cassert>
 #include "Sphere.h"
+#include "Box.h"
 #include <glm\glm.hpp>
 #include <glm\ext.hpp>
 #include "Plane.h"
@@ -14,9 +15,9 @@ typedef PhysicsScene::CollisionData(*collisionFnc)(PhysicsObject*, PhysicsObject
 static collisionFnc collisionFunctionArray[] =
 {
 	nullptr					  ,	PhysicsScene::Plane2Sphere,
-	PhysicsScene::Sphere2Plane,	PhysicsScene::Sphere2Sphere,
-	PhysicsScene::Sphere2Box, PhysicsScene::Box2Plane, PhysicsScene::Box2Sphere,
-	PhysicsScene::Box2Box,
+	PhysicsScene::Plane2Box,    PhysicsScene::Sphere2Plane,	PhysicsScene::Sphere2Sphere,
+	PhysicsScene::Sphere2Box,   PhysicsScene::Box2Plane,    PhysicsScene::Box2Sphere,
+	PhysicsScene::Box2Box
 };
 
 PhysicsScene::PhysicsScene() : m_timeStep(0.01f), m_gravity(glm::vec2(0, 0))
@@ -241,13 +242,9 @@ PhysicsScene::CollisionData PhysicsScene::Sphere2Sphere(PhysicsObject * obj1, Ph
 	//Try to cast objects to sphere and sphere
 	Sphere* sphere1 = dynamic_cast<Sphere*>(obj1);
 	Sphere* sphere2 = dynamic_cast<Sphere*>(obj2);
+
+
 	CollisionData collData;
-
-
-	glm::vec2 vecBetween = sphere2->getPosition() - sphere1->getPosition();							  //End - Start
-
-
-	float distance = glm::length(vecBetween);														  //GLM MAGNITUDE(Gets the length of the Vector we are halfing)
 
 																									  //If we are successful then test for collision
 	if (sphere1 != nullptr && sphere2 != nullptr)
@@ -256,23 +253,18 @@ PhysicsScene::CollisionData PhysicsScene::Sphere2Sphere(PhysicsObject * obj1, Ph
 		//You need code which sets velocity of the two spheres to zero
 		//If they are overlapping
 
-		glm::vec2 offset = sphere2->getPosition() - sphere1->getPosition();							   //Distance between the spheres
-		float sqrdDistance = offset.x * offset.x + offset.y * offset.y;								   //Times both x's together as well as y's and pluses them together
-		float distanceBetween = sqrdDistance;														   //Pushes sqrdDistance into distanceBetween
-
-		float minDistanceBetween = (sphere1->getRadius() + sphere2->getRadius());
-		minDistanceBetween *= minDistanceBetween;
+		float distanceBetween = glm::length(sphere2->getPosition() - sphere1->getPosition());
+		float minDistBetween = sphere1->getRadius() + sphere2->getRadius();
 
 		//Get distance between 2 spheres
 		//If distance is less than the combined radius of
 		//both spheres, then a collision occurred so set the
 		//velocity of both spheres to 0 (we'll add collision resolution later)
-		if (distanceBetween < minDistanceBetween)
+		if (distanceBetween < minDistBetween)
 		{
 			collData.wasCollision = true;																//Sets collision to true
 			collData.normal = glm::normalize(sphere2->getPosition() - sphere1->getPosition());			//Normalizes both spheres positions
-			collData.overlap = distanceBetween - minDistanceBetween;									//Pushes in both distances into the overlap
-			sphere1->resolveCollision(sphere2, 0.5f * (sphere1->getPosition() + sphere2->getPosition()));
+			collData.overlap = distanceBetween - minDistBetween;									//Pushes in both distances into the overlap
 
 			return collData;
 		}
@@ -310,20 +302,150 @@ PhysicsScene::CollisionData PhysicsScene::Sphere2Plane(PhysicsObject * obj1, Phy
 
 PhysicsScene::CollisionData PhysicsScene::Sphere2Box(PhysicsObject * obj1, PhysicsObject * obj2)
 {
-	return CollisionData();
+	return Box2Sphere(obj2, obj1);
 }
 
 PhysicsScene::CollisionData PhysicsScene::Box2Plane(PhysicsObject * obj1, PhysicsObject * obj2)
 {
-	return CollisionData();
+	/*Box* box = dynamic_cast<Box*>(obj1);
+	Plane* plane = dynamic_cast<Plane*>(obj2);
+
+	//If we are successful then test for collsion
+	if (box != nullptr && plane != nullptr)
+	{
+		int numCounts = 0;
+		glm::vec2 contact(0, 0);
+		float contactV = 0;
+		float radius = 0.5f * std::fminf(box->getWidth(), box->getHeight());
+
+		//Which side is the centre of mass on?
+		glm::vec2 planeOrigin = plane->getNormal() * plane->getDistance();
+		float comFromPlane = glm::dot(box->getPosition() - planeOrigin,
+									  plane->getNormal());
+
+		//Check all four corners to see if we have hit the plane
+		for (float x = -box->getExtents().y; x < box->getWidth(); x+= box->getWidth())
+		{
+			for (float y = -box->getExtents().y; y < box->getHeight(); y+= box->getHeight())
+			{
+				//Get the position of the corner in world space
+				glm::vec2 p = box->getPosition() + x * box->getLocalX() +
+					          y * box->getLocalY();
+
+				float distFromPlane = glm::dot(p - planeOrigin, plane->getNormal());
+
+				//This is the velocity of the point
+				float velocityIntoPlane = glm::dot(box->getVelocity() + box->getRotation() *
+												  (-y * box->getLocalX() + x * box->getLocalY()), plane->getNormal());
+
+				//If this corner is on the opposite side from the COM.
+				and moving further in, we need to resolve the collsion
+				if ((distFromPlane > 0 && comFromPlane < 0 && velocityIntoPlane > 0) ||
+					(distFromPlane < 0 && comFromPlane > 0 && velocityIntoPlane < 0))
+				{
+					numCounts++;
+					contact += p;
+					contactV += velocityIntoPlane;
+				}
+			}
+		}
+
+		//We have had a hit - typically only two corners can contact
+		if (numCounts > 0)
+		{
+			//Get the average collision velocity into the plane
+			//(covers linear and rotational velocity of all corners involved)
+			float CollisionV = contactV / (float)numCounts;
+
+			//Get the acceleration required to stop (restitution = 0) or reverse
+			//(restitution = 1) the average velocity of all corners involved
+			glm::vec2 acceleration = -plane->getNormal() * ((1.0f + box->getElasticity()) * CollisionV);
+
+			//And the average position at which we will apply the force
+			//(corner or edge centre)
+			glm::vec2 localContact = (contact / (float)numCounts) - box->getPosition();
+
+			//This is the perpendicular distance we apply the force at relative to the COM, so torque = F*r
+			float r = glm::dot(localContact, glm::vec2(plane->getNormal().y,
+													   plane->getNormal().x));
+
+			//Work out the "effective mass" - this is a combination of moment of 
+			//inertia and mass, and tells us how much the contact point velocity
+			//will change with the force we are applying
+			float mass0 = 1.0f / (1.0f / box->getMass() + (r*r) / box->getMoment());
+
+			//And apply force
+			box->applyForce(acceleration * mass0, localContact);
+		}
+	}*/
+	Box* box = dynamic_cast<Box*>(obj1);
+	Plane* plane = dynamic_cast<Plane*>(obj2);
+
+	CollisionData colldata;
+
+	//If we are successful then test for collision
+	if (box != nullptr && plane != nullptr)
+	{
+		//The distance between the box and the plane
+		float distanceBetween = glm::dot(box->getPosition(), plane->getNormal()) - plane->getDistance();
+
+		float d = (distanceBetween - glm::length(box->getExtents() * plane->getNormal()));
+
+		//If check for collision
+		if (d < 0)
+		{
+			colldata.wasCollision = true;
+			colldata.normal = plane->getNormal();
+			colldata.overlap = d;
+		}
+	}
+
+	return colldata;
 }
 
 PhysicsScene::CollisionData PhysicsScene::Box2Sphere(PhysicsObject * obj1, PhysicsObject * obj2)
 {
-	return CollisionData();
+	auto box = dynamic_cast<Box*>(obj1);
+	auto sphere = dynamic_cast<Sphere*>(obj2);
+
+	CollisionData collData;
+
+	//If we are successful then test for collision
+	if (box != nullptr && sphere != nullptr)
+	{
+		glm::vec2 offset = (sphere->getPosition() - box->getPosition());
+
+		//Clamp the offset distance between the sphere and box
+		//To find the closest point on the box to the sphere
+		if (std::fabsf(offset.x) > box->getExtents().x)
+		{
+			offset.x = offset.x < 0 ? box->getExtents().x * -1 : box->getExtents().x;
+		}
+		if (std::fabsf(offset.y) > box->getExtents().y)
+		{
+			offset.y = offset.y < 0 ? box->getExtents().y * -1 : box->getExtents().y;
+		}
+		glm::vec2 closestPointOnBox = box->getPosition() + offset;
+
+		//Find the distance between the sphere and the closest point on the box
+		glm::vec2 actualOffSet = sphere->getPosition() - closestPointOnBox;
+
+		if (glm::length(actualOffSet) < sphere->getRadius())
+		{
+			collData.wasCollision = true;
+			collData.normal = glm::normalize(actualOffSet);
+			collData.overlap = sphere->getRadius() - glm::length(actualOffSet);
+		}
+	}
+	return collData;
 }
 
 PhysicsScene::CollisionData PhysicsScene::Box2Box(PhysicsObject * obj1, PhysicsObject * obj2)
 {
 	return CollisionData();
+}
+
+PhysicsScene::CollisionData PhysicsScene::Plane2Box(PhysicsObject * obj1, PhysicsObject * obj2)
+{
+	return Box2Plane(obj2, obj1);
 }

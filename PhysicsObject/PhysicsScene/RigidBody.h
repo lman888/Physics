@@ -21,9 +21,6 @@ public:
 	//Applying Forces
 	void applyForce(glm::vec2 force, glm::vec2 pos);
 
-	//Checks Collision
-	bool checkCollision(PhysicsObject* pOther) ;
-
 	float getMass() { return m_mass; }
 
 	glm::vec2 getVelocity() { return m_velocity; }

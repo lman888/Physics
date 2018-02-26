@@ -8,6 +8,8 @@
 #include "Plane.h"
 #include "Box.h"
 
+//Virtual allows for overriding functions (google it)
+
 class PhysicsSceneFixedTimeStepApp : public aie::Application {
 public:
 
@@ -30,6 +32,7 @@ protected:
 
 	Sphere* colBall1;
 	Sphere* colBall2;
+	Sphere* colBall3;
 	Box* box1;
 
 	Plane* plane;

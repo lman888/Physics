@@ -69,6 +69,9 @@ public:
 	static CollisionData Box2Box(PhysicsObject* obj1,
 								 PhysicsObject* obj2);
 
+	static CollisionData Plane2Box(PhysicsObject* obj1,
+								   PhysicsObject* obj2);
+
 protected:
 	//Intialise values
 	glm::vec2 m_gravity;
