@@ -34,6 +34,7 @@ protected:
 	Sphere* colBall2;
 	Sphere* colBall3;
 	Box* box1;
+	Box* box2;
 
 	Plane* plane;
 };

@@ -49,10 +49,12 @@ bool PhysicsSceneFixedTimeStepApp::startup()
 	colBall1->setShapeID(SPHERE);
 	colBall2 = new Sphere(glm::vec2(100, 0), glm::vec2(0, -50), 4.0f, 24, glm::vec4(1, 1, 0, 0));		//Creates the Ball
 	colBall2->setShapeID(SPHERE);
-	colBall3 = new Sphere(glm::vec2(50, 0), glm::vec2(0, -50), 400.0f, 24, glm::vec4(1, 0, 0, 1));
+	colBall3 = new Sphere(glm::vec2(50, 0), glm::vec2(0, -50), 4.0f, 24, glm::vec4(1, 0, 0, 1));
 	colBall3->setShapeID(SPHERE);
 	box1 = new Box(glm::vec2(-150, 0), glm::vec2(-1000, 0), 1.0f, glm::vec2(30, 30), glm::vec4(1, 1, 1, 1));
 	box1->setShapeID(BOX);
+	box2 = new Box(glm::vec2(150, 0), glm::vec2(0, 0), 1.0f, glm::vec2(30, 30), glm::vec4(1, 1, 1, 1));
+	box2->setShapeID(BOX);
 																						
 	plane = new Plane(glm::vec2(0, 1), -150);															//Creates the Plane
 	plane->setShapeID(PLANE);																			//Gets the Shape ID for the Plane
@@ -63,6 +65,7 @@ bool PhysicsSceneFixedTimeStepApp::startup()
 	m_physicsScene->addActor(colBall2);	
 	m_physicsScene->addActor(colBall3);																	//Adds in the Actor into the array
 	m_physicsScene->addActor(box1);
+	m_physicsScene->addActor(box2);
 
 	//colBall1->applyForce(glm::vec2(0, 0));															    //Applys force to the actor
 	//colBall2->applyForce(glm::vec2(0, 0));															    //Applys force to the second actor

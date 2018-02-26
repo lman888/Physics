@@ -442,7 +442,52 @@ PhysicsScene::CollisionData PhysicsScene::Box2Sphere(PhysicsObject * obj1, Physi
 
 PhysicsScene::CollisionData PhysicsScene::Box2Box(PhysicsObject * obj1, PhysicsObject * obj2)
 {
-	return CollisionData();
+	//Try to cast objects to box and box
+	auto* box2 = dynamic_cast<Box*>(obj1);
+	auto* box1 = dynamic_cast<Box*>(obj2);
+
+	CollisionData collData;
+
+	//If we are successful then test for collision
+	if (box1 != nullptr && box2 != nullptr)
+	{
+		//The distance between the two boxs
+		float distance = glm::length(box2->getPosition() - box1->getPosition());
+		//The Min X of box 1
+		float box1MinX = box1->getPosition().x - box1->getExtents().x;
+		//The Min X of box 2
+		float box2MinX = box2->getPosition().x - box2->getExtents().x;
+		//The Min Y of box 1 
+		float box1MinY = box1->getPosition().y - box1->getExtents().y;
+		//The Min Y of box 2
+		float box2MinY = box2->getPosition().y - box1->getExtents().y;
+		//The Max X of box 1
+		float box1MaxX = box1->getPosition().x + box1->getExtents().x;
+		//The Max X of box 2
+		float box2MaxX = box2->getPosition().x + box2->getExtents().x;
+		//The Max Y of box 1
+		float box1MaxY = box1->getPosition().y + box1->getExtents().y;
+		//The Max Y of box 2
+		float box2MaxY = box2->getPosition().y + box2->getExtents().y;
+
+		//If check for collision
+		if (box1MinX < box2MaxX && box1MaxX > box2MinX && box1MinY < box2MaxY && box1MaxY > box2MinY)
+		{
+			float xSeperationBox1Box2 = box1MinX - box2MaxX;
+			float xSeperationBox2Box1 = box1MaxX - box2MinX;
+			float ySeperationBox1Box2 = box1MinY - box2MaxY;
+			float ySeperationBox2Box1 = box1MaxY - box2MinY;
+			float overlapX = std::fabsf(xSeperationBox1Box2) < std::fabsf(xSeperationBox2Box1) ? xSeperationBox1Box2 : xSeperationBox2Box1;
+			float overlapY = std::fabsf(ySeperationBox1Box2) < std::fabsf(ySeperationBox2Box1) ? ySeperationBox1Box2 : ySeperationBox2Box1;
+			glm::vec2 overlap = std::fabsf(overlapX) < std::fabsf(overlapY) ? glm::vec2(overlapX, 0) : glm::vec2(0, overlapY);
+
+			collData.wasCollision = true;
+			collData.normal = -glm::normalize(overlap);
+			collData.overlap = glm::length(overlap);
+		}
+	}
+
+	return collData;
 }
 
 PhysicsScene::CollisionData PhysicsScene::Plane2Box(PhysicsObject * obj1, PhysicsObject * obj2)
