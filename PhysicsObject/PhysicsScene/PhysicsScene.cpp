@@ -482,7 +482,7 @@ PhysicsScene::CollisionData PhysicsScene::Box2Box(PhysicsObject * obj1, PhysicsO
 			glm::vec2 overlap = std::fabsf(overlapX) < std::fabsf(overlapY) ? glm::vec2(overlapX, 0) : glm::vec2(0, overlapY);
 
 			collData.wasCollision = true;
-			collData.normal = -glm::normalize(overlap);
+			collData.normal = glm::normalize(overlap);
 			collData.overlap = glm::length(overlap);
 		}
 	}
