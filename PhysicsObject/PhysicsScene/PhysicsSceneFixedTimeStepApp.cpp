@@ -86,6 +86,8 @@ bool PhysicsSceneFixedTimeStepApp::startup()
 
 void PhysicsSceneFixedTimeStepApp::shutdown() 
 {
+	aie::Gizmos::destroy();
+	delete m_physicsScene;
 	delete m_font;
 	delete m_2dRenderer;
 }
