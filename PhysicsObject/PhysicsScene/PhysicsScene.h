@@ -68,7 +68,7 @@ public:
 
 	static CollisionData Box2Box(PhysicsObject* obj1,
 								 PhysicsObject* obj2);
-
+	  
 	static CollisionData Plane2Box(PhysicsObject* obj1,
 								   PhysicsObject* obj2);
 
